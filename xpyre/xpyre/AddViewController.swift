@@ -1,17 +1,16 @@
 //
-//  ViewController.swift
+//  AddViewController.swift
 //  xpyre
 //
-//  Created by Bella Gatzemeier on 5/21/25.
+//  Created by Brandon Kim on 5/31/25.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class AddViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
 }
-
