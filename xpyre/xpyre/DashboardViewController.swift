@@ -17,10 +17,16 @@ class GroceryItem {
     }
 }
 
+class tableCell: UITableViewCell {
+    @IBOutlet weak var cellName: UILabel!
+    @IBOutlet weak var cellDate: UILabel!
+}
+
 class DashboardViewController: UITableViewController {
     
     var groceryArray : [GroceryItem] = []
     
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -30,8 +36,11 @@ class DashboardViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         if (groceryArray.count > 0) {
-            print(groceryArray[0].name)
+            print("Number of items: \(groceryArray.count)")
         }
+        tableView.reloadData() // this is needed to update data from upload page
+        // TODO: load in cloud data
+
     }
     
     // sets up table size rows
@@ -41,19 +50,23 @@ class DashboardViewController: UITableViewController {
     
     // sets up data in each cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "productCell", for: indexPath)
-        cell.textLabel?.text = groceryArray[indexPath.row].name
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? tableCell else {
+            fatalError("Could not dequeue cell with identifier 'cell'")
+        }
+        
+        cell.cellName.text = groceryArray[indexPath.row].name
+        cell.cellDate.text = "Expires in " + String(groceryArray[indexPath.row].daysItLasts) + " days"
         return cell
     }
-    
     
     // height of row at every index
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
     
+//    // prints selected product
 //    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let selectedProd = groceryArray[indexPath.row]
+//        let selectedProd = groceryArray[indexPath.row].name
 //        print(selectedProd)
 //    }
     
