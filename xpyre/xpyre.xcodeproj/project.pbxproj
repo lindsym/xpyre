@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		132C9F532DF1130C000757C5 /* FirebaseAI in Frameworks */ = {isa = PBXBuildFile; productRef = 132C9F522DF1130C000757C5 /* FirebaseAI */; };
+		132C9F552DF1130C000757C5 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 132C9F542DF1130C000757C5 /* FirebaseAnalytics */; };
+		132C9F572DF1130C000757C5 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 132C9F562DF1130C000757C5 /* FirebaseAnalyticsCore */; };
+		132C9F592DF1130C000757C5 /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 132C9F582DF1130C000757C5 /* FirebaseAnalyticsIdentitySupport */; };
+		132C9F5B2DF1130C000757C5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 132C9F5A2DF1130C000757C5 /* FirebaseAnalyticsOnDeviceConversion */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DB5C5B302DDEABA300BC491A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -30,6 +38,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		132C9F4F2DF1125E000757C5 /* Exceptions for "xpyre" folder in "xpyreTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = DB5C5B2E2DDEABA300BC491A /* xpyreTests */;
+		};
+		132C9F502DF1125E000757C5 /* Exceptions for "xpyre" folder in "xpyreUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = DB5C5B382DDEABA300BC491A /* xpyreUITests */;
+		};
 		DB5C5B412DDEABA300BC491A /* Exceptions for "xpyre" folder in "xpyre" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -44,6 +66,8 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				DB5C5B412DDEABA300BC491A /* Exceptions for "xpyre" folder in "xpyre" target */,
+				132C9F4F2DF1125E000757C5 /* Exceptions for "xpyre" folder in "xpyreTests" target */,
+				132C9F502DF1125E000757C5 /* Exceptions for "xpyre" folder in "xpyreUITests" target */,
 			);
 			path = xpyre;
 			sourceTree = "<group>";
@@ -65,6 +89,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				132C9F592DF1130C000757C5 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
+				132C9F552DF1130C000757C5 /* FirebaseAnalytics in Frameworks */,
+				132C9F5B2DF1130C000757C5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
+				132C9F572DF1130C000757C5 /* FirebaseAnalyticsCore in Frameworks */,
+				132C9F532DF1130C000757C5 /* FirebaseAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +154,11 @@
 			);
 			name = xpyre;
 			packageProductDependencies = (
+				132C9F522DF1130C000757C5 /* FirebaseAI */,
+				132C9F542DF1130C000757C5 /* FirebaseAnalytics */,
+				132C9F562DF1130C000757C5 /* FirebaseAnalyticsCore */,
+				132C9F582DF1130C000757C5 /* FirebaseAnalyticsIdentitySupport */,
+				132C9F5A2DF1130C000757C5 /* FirebaseAnalyticsOnDeviceConversion */,
 			);
 			productName = xpyre;
 			productReference = DB5C5B192DDEABA100BC491A /* xpyre.app */;
@@ -208,6 +242,9 @@
 			);
 			mainGroup = DB5C5B102DDEABA100BC491A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DB5C5B1A2DDEABA100BC491A /* Products */;
 			projectDirPath = "";
@@ -565,6 +602,45 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		132C9F522DF1130C000757C5 /* FirebaseAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAI;
+		};
+		132C9F542DF1130C000757C5 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		132C9F562DF1130C000757C5 /* FirebaseAnalyticsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsCore;
+		};
+		132C9F582DF1130C000757C5 /* FirebaseAnalyticsIdentitySupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsIdentitySupport;
+		};
+		132C9F5A2DF1130C000757C5 /* FirebaseAnalyticsOnDeviceConversion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 132C9F512DF1130C000757C5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DB5C5B112DDEABA100BC491A /* Project object */;
 }

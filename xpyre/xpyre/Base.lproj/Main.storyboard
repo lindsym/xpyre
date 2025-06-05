@@ -74,23 +74,46 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Recipes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nbZ-Ru-S0F">
-                                <rect key="frame" x="166" y="416" width="61" height="21"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iDc-R2-eJA">
+                                <rect key="frame" x="159" y="700" width="75" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                <connections>
+                                    <action selector="generateRecipes" destination="cAs-u7-BUV" eventType="touchUpInside" id="IzE-cj-rqZ"/>
+                                </connections>
+                            </button>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RO8-hE-l9t">
+                                <rect key="frame" x="16" y="92" width="361" height="589"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="50" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gS6-7C-Vv8">
+                                        <rect key="frame" x="0.0" y="0.0" width="361" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="361" id="Pie-Ue-cGk"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <viewLayoutGuide key="contentLayoutGuide" id="qGs-Ih-cK7"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="ruQ-pO-i9G"/>
+                            </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Sxl-lZ-bF1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Recipes" image="magnifyingglass" catalog="system" id="AGh-xL-UeH"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="aiResponse" destination="gS6-7C-Vv8" id="VLT-2o-3Xx"/>
+                        <outlet property="testButton" destination="iDc-R2-eJA" id="np3-Xs-bOz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yeZ-rH-e1Z" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1160" y="-250"/>
+            <point key="canvasLocation" x="-1161.0687022900763" y="-250"/>
         </scene>
         <!--Add-->
         <scene sceneID="k8v-sh-LbW">
