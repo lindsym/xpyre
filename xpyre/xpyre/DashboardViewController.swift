@@ -7,14 +7,13 @@
 
 import UIKit
 
-class GroceryItem {
-    var name: String
-    var daysItLasts: Int
-    
-    init(name: String, daysItLasts: Int) {
-        self.name = name
-        self.daysItLasts = daysItLasts
-    }
+struct GroceryItem: Codable {
+    let name: String
+    let daysItLasts: Int
+}
+
+struct DashboardData: Codable {
+    let DashboardProducts: [GroceryItem]
 }
 
 class tableCell: UITableViewCell {
@@ -23,13 +22,30 @@ class tableCell: UITableViewCell {
 }
 
 class DashboardViewController: UITableViewController {
-    
+
     var groceryArray : [GroceryItem] = []
-    
         
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        loadGroceryData()
+    }
+    
+    func loadGroceryData() {
+        guard let fileURL = Bundle.main.url(forResource: "LocalStorage", withExtension: "json") else {
+            print("File not found in bundle.")
+            return
+        }
+
+        do {
+            let data = try Data(contentsOf: fileURL)
+            let decoder = JSONDecoder()
+            let dashboardData = try decoder.decode(DashboardData.self, from: data)
+            self.groceryArray = dashboardData.DashboardProducts
+            tableView.reloadData()
+        } catch {
+            print("Failed to decode JSON: \(error)")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

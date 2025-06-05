@@ -88,8 +88,9 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="50" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gS6-7C-Vv8">
-                                        <rect key="frame" x="0.0" y="0.0" width="361" height="21"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="361" height="966"/>
                                         <constraints>
+                                            <constraint firstAttribute="height" constant="966" id="IZ3-89-gbb"/>
                                             <constraint firstAttribute="width" constant="361" id="Pie-Ue-cGk"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
