@@ -1,0 +1,6 @@
+{
+    "DashboardProducts" : [
+        {"name": "apple", "daysItLasts": 4},
+        {"name": "banana", "daysItLasts": 7}
+    ]
+}
