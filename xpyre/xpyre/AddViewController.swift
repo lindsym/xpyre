@@ -57,7 +57,7 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
         
         expireDate.date = defaultDate ?? Date()
 
-        if let url = getDocumentsURL() {
+        if let url = getDocumentsURL(file: "LocalStorage.json") {
             print("JSON file path: \(url.path)")
         }
         if let historyURL = getHistoryURL() {
@@ -81,7 +81,7 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
     
 
     // gets the url of the json file
-    func getDocumentsURL() -> URL? {
+    func getDocumentsURL(file: String) -> URL? {
         let fileManager = FileManager.default
         return try? fileManager.url(for: .documentDirectory,
                                     in: .userDomainMask,
