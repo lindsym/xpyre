@@ -96,8 +96,11 @@ class DashboardViewController: UITableViewController {
         if (groceryArray.count > 0) {
             print("Number of items: \(groceryArray.count)")
         }
+        
+        groceryArray.sort { $0.daysItLasts < $1.daysItLasts }
+
         loadGroceryData()
-        tableView.reloadData()
+//        tableView.reloadData()
 
     }
     
@@ -122,10 +125,74 @@ class DashboardViewController: UITableViewController {
         return 100
     }
     
-//    // prints selected product
-//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let selectedProd = groceryArray[indexPath.row].name
-//        print(selectedProd)
+    // prints selected product
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedProd = groceryArray[indexPath.row].name
+        print("Selected: \(selectedProd)")
+
+        let alert = UIAlertController(title: "Delete this item?", message: "\(selectedProd)", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { _ in
+            // delete from local store
+            self.groceryArray.remove(at: indexPath.row)
+            
+            // TODO: delete item from JSON
+            self.deleteFromJSON(selectedProd)
+            
+            // delete from table view
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            print(self.groceryArray)
+
+        } )
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        
+        print(groceryArray)
+    }
+    
+//    func deleteFromJSON(_ name: String) {
+//        do {
+//            let fileManager = FileManager.default
+//            let fm = try fileManager.url(for: .documentDirectory,in: .userDomainMask,appropriateFor: nil,create: true).appendingPathComponent("LocalStorage.json")
+//            let data = try Data(contentsOf: fm)
+//            var contents = try JSONDecoder().decode([GroceryItem].self, from: data)
+//            
+//            contents.removeAll { $0.name == name }
+//            
+//            if let newData = try? JSONEncoder().encode(contents) {
+//                try? newData.write(to: fm)
+//                print("Successfully deleted from JSON")
+//            }
+//        } catch {
+//            print("Error deleting from JSON")
+//            return
+//        }
 //    }
+    
+    func deleteFromJSON(_ name: String) {
+//        guard let documentsURL = getDocumentsURL() else {
+//            print("Could not find Documents directory")
+//            return
+//        }
+
+
+        do {
+            let fileManager = FileManager.default
+            let url = try fileManager.url(for: .documentDirectory,in: .userDomainMask,appropriateFor: nil,create: true).appendingPathComponent("LocalStorage.json")
+            let data = try Data(contentsOf: url)
+            var dashboardData = try JSONDecoder().decode(DashboardData.self, from: data)
+
+            dashboardData.DashboardProducts.removeAll { $0.name == name }
+
+            let newData = try JSONEncoder().encode(dashboardData)
+            try newData.write(to: url)
+
+            print("Successfully deleted '\(name)' from JSON")
+        } catch {
+            print("Error deleting from JSON: \(error)")
+        }
+    }
+
+
     
 }
