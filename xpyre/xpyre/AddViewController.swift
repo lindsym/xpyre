@@ -7,10 +7,23 @@
 
 import UIKit
 import UserNotifications
+import Foundation
+
 
 struct HistoryItem: Codable {
     let name: String
     let days: Int
+}
+
+class NotifHistoryItem: Codable {
+    var message : String
+    var notifDate : Date
+    var checked : Bool = false
+    
+    init(item: String, date: Date) {
+        message = "Your \(item) expires today!"
+        notifDate = date
+    }
 }
 
 class AddViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -66,13 +79,14 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
         expirationDays = components.day
     }
     
+
     // gets the url of the json file
     func getDocumentsURL() -> URL? {
         let fileManager = FileManager.default
         return try? fileManager.url(for: .documentDirectory,
                                     in: .userDomainMask,
                                     appropriateFor: nil,
-                                    create: true).appendingPathComponent("LocalStorage.json")
+                                    create: true).appendingPathComponent(file)
     }
 
     func createEmptyJSONFileIfNeeded(at url: URL) {
@@ -83,7 +97,7 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
             do {
                 let data = try JSONEncoder().encode(initialData)
                 try data.write(to: url)
-                print("Created new empty LocalStorage.json")
+                print("Created new empty file !!!")
             } catch {
                 print("Failed to create initial JSON file: \(error)")
             }
@@ -114,7 +128,7 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
     
     @IBAction func toDash(_ sender: UIButton) {
             
-        guard let documentsURL = getDocumentsURL() else {
+        guard let documentsURL = getDocumentsURL(file: "LocalStorage.json") else {
             print("Could not find Documents directory")
             return
         }
@@ -266,7 +280,7 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
         let identifier = groceryName
         let title = "You have a grocery about to expire!"
         let body = "Your \(groceryName) expires today"
-
+        
         
         let notificationCenter = UNUserNotificationCenter.current()
         
@@ -284,14 +298,74 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
         
         if (calendar.isDateInToday(expireDate)) {
             dateComponents.hour = todayHour
-            dateComponents.minute = todayMinute + 1
+            if (todayMinute != 59) {
+                dateComponents.minute = todayMinute + 1
+            } else {
+                dateComponents.minute = 0
+            }
+        } else {
+            dateComponents.hour = 5
+            dateComponents.minute = 0
+            dateComponents.second = 0
         }
-
+        
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
         notificationCenter.removeDeliveredNotifications(withIdentifiers: [identifier])
         notificationCenter.add(request)
+        
+        
+        
+        //JSON notification logic below
+        do {
+            let fileManager = FileManager.default
+            let documentsURL = try fileManager.url(for: .documentDirectory,
+                                                   in: .userDomainMask,
+                                                   appropriateFor: nil,
+                                                   create: true)
+            let notifPath = documentsURL.appendingPathComponent("NotificationHistory.json")
+            
+            if !fileManager.fileExists(atPath: notifPath.path) {
+                saveNotifHistory(items: [], to: notifPath)
+            }
+            
+            var history = loadNotifHistory(from: notifPath)
+            history.append(NotifHistoryItem(item: groceryName, date: expireDate))
+            saveNotifHistory(items: history, to: notifPath)
+
+        } catch {
+            print("not working: \(error)")
+        }
     }
+    
+    func saveNotifHistory(items: [NotifHistoryItem], to url: URL) {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+
+        do {
+            let data = try encoder.encode(items)
+            try data.write(to: url)
+            print("saved notif!")
+        } catch {
+            print("could not save \(error)")
+        }
+    }
+    
+    func loadNotifHistory(from url: URL) -> [NotifHistoryItem] {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+
+        do {
+            let data = try Data(contentsOf: url)
+            let items = try decoder.decode([NotifHistoryItem].self, from: data)
+            return items
+        } catch {
+            print("could not load \(error)")
+            return []
+        }
+    }
+
+
 }

@@ -21,6 +21,18 @@ class tableCell: UITableViewCell {
     @IBOutlet weak var cellDate: UILabel!
 }
 
+class filterCell: UITableViewCell {
+    @IBOutlet weak var filterSegment: UISegmentedControl!
+    @IBOutlet weak var applyButton: UIButton!
+    
+    var applySort: ((Int) -> Void)?
+    
+    @IBAction func onApplyTapped(_ sender: Any) {
+        applySort?(filterSegment.selectedSegmentIndex)
+    }
+    
+}
+
 class DashboardViewController: UITableViewController {
 
     var groceryArray : [GroceryItem] = []
@@ -32,8 +44,8 @@ class DashboardViewController: UITableViewController {
         // UNCOMMENT THIS WHEN GROCERY LIST GET TOO LONG
         // COMMENT IT BACK FOR TESTING
         // clearDashboardData()
-
     }
+    
     
     // THIS FUNCTION PURELY FOR TESTING
     // IT RESETS THE JSON EVERYTIME THE APP IS LOADED
@@ -84,6 +96,7 @@ class DashboardViewController: UITableViewController {
             let data = try Data(contentsOf: fileURL)
             let dashboardData = try JSONDecoder().decode(DashboardData.self, from: data)
             self.groceryArray = dashboardData.DashboardProducts
+        
             tableView.reloadData()
         } catch {
             print("Failed to load or decode JSON: \(error)")
@@ -96,86 +109,94 @@ class DashboardViewController: UITableViewController {
         if (groceryArray.count > 0) {
             print("Number of items: \(groceryArray.count)")
         }
-        
-        groceryArray.sort { $0.daysItLasts < $1.daysItLasts }
-
         loadGroceryData()
-//        tableView.reloadData()
-
+        tableView.reloadData()
     }
     
     // sets up table size rows
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groceryArray.count
+        return groceryArray.count + 1
     }
     
     // sets up data in each cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? tableCell else {
-            fatalError("Could not dequeue cell with identifier 'cell'")
-        }
         
-        cell.cellName.text = groceryArray[indexPath.row].name
-        cell.cellDate.text = "Expires in " + String(groceryArray[indexPath.row].daysItLasts) + " days"
-        return cell
+        if indexPath.row == 0 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "filter", for: indexPath) as? filterCell else {
+                fatalError("Could not dequeue cell with identifier 'filter'")
+            }
+            // TODO: delete print statements
+
+            cell.applySort = { [weak self] selectedIndex in
+                 self?.sort(selectedIndex)
+             }
+            return cell
+
+        } else {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? tableCell else {
+                fatalError("Could not dequeue cell with identifier 'cell'")
+            }
+            let item = groceryArray[indexPath.row - 1]
+            cell.cellName.text = item.name
+            cell.cellDate.text = "Expires in " + String(item.daysItLasts) + " days"
+            return cell
+        }
+    }
+    
+    func sort(_ index : Int) {
+        var filteredArray = groceryArray
+       
+        // alphabetic sort
+        if index == 0 {
+            filteredArray.sort { $0.name < $1.name }
+
+        // date sort
+        } else {
+            filteredArray.sort { $0.daysItLasts < $1.daysItLasts }
+        }
+        groceryArray = filteredArray
+        tableView.reloadData()
+
     }
     
     // height of row at every index
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 50
     }
+    
     
     // prints selected product
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedProd = groceryArray[indexPath.row].name
-        print("Selected: \(selectedProd)")
+        if indexPath.row > 0 {
+            let selectedProd = groceryArray[indexPath.row - 1].name
+            print("Selected: \(selectedProd)")
 
-        let alert = UIAlertController(title: "Delete this item?", message: "\(selectedProd)", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { _ in
-            // delete from local store
-            self.groceryArray.remove(at: indexPath.row)
-            
-            // TODO: delete item from JSON
-            self.deleteFromJSON(selectedProd)
-            
-            // delete from table view
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            
-            print(self.groceryArray)
+            let alert = UIAlertController(title: "Delete this item?", message: "\(selectedProd)", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { _ in
+                // delete from local store
+                self.groceryArray.remove(at: indexPath.row - 1)
+                
+                // delete from JSON
+                self.deleteFromJSON(selectedProd)
+                
+                // delete from table view
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+                print(self.groceryArray)
 
-        } )
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-        
-        print(groceryArray)
+            } )
+            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            
+            print(groceryArray)
+        } else {
+            return
+        }
+
     }
     
-//    func deleteFromJSON(_ name: String) {
-//        do {
-//            let fileManager = FileManager.default
-//            let fm = try fileManager.url(for: .documentDirectory,in: .userDomainMask,appropriateFor: nil,create: true).appendingPathComponent("LocalStorage.json")
-//            let data = try Data(contentsOf: fm)
-//            var contents = try JSONDecoder().decode([GroceryItem].self, from: data)
-//            
-//            contents.removeAll { $0.name == name }
-//            
-//            if let newData = try? JSONEncoder().encode(contents) {
-//                try? newData.write(to: fm)
-//                print("Successfully deleted from JSON")
-//            }
-//        } catch {
-//            print("Error deleting from JSON")
-//            return
-//        }
-//    }
-    
+    // does as the title states
     func deleteFromJSON(_ name: String) {
-//        guard let documentsURL = getDocumentsURL() else {
-//            print("Could not find Documents directory")
-//            return
-//        }
-
-
         do {
             let fileManager = FileManager.default
             let url = try fileManager.url(for: .documentDirectory,in: .userDomainMask,appropriateFor: nil,create: true).appendingPathComponent("LocalStorage.json")
@@ -192,7 +213,4 @@ class DashboardViewController: UITableViewController {
             print("Error deleting from JSON: \(error)")
         }
     }
-
-
-    
 }
