@@ -1,6 +1,1 @@
-{
-    "DashboardProducts" : [
-        {"name": "apple", "daysItLasts": 4},
-        {"name": "banana", "daysItLasts": 7}
-    ]
-}
+{"DashboardProducts":[{"daysItLasts":3,"name":"apple"},{"daysItLasts":3,"name":"brig"}]}

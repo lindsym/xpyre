@@ -8,18 +8,65 @@
 import UIKit
 import UserNotifications
 
+struct HistoryItem: Codable {
+    let name: String
+    let days: Int
+}
 
-class AddViewController: UIViewController {
+class AddViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    var historyArray : [HistoryItem] = []
     
     @IBOutlet weak var itemName: UITextField!
     @IBOutlet weak var expireDate: UIDatePicker!
     @IBOutlet weak var addNewGroceryButton: UIButton!
+    var expirationDays: Int?
+    var defaultDate : Date?
 
-    @IBAction func daystillExpiration(_ sender: UIDatePicker) {
+    @IBOutlet weak var historyTable: UITableView!
+    
+    override func viewDidLoad() {
+        itemName.placeholder = "type here"
+
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        historyTable.delegate = self
+        historyTable.dataSource = self
         
+        // datepicker testing
+//        let calendar = Calendar.current
+//        var components = DateComponents()
+//        components.year = 2012
+//        components.month = 5
+//        components.day = 23
+//        let defaultDate = calendar.date(from: components)!
+//        expireDate.date = defaultDate
+        
+        expireDate.date = defaultDate ?? Date()
+
+        if let url = getDocumentsURL() {
+            print("JSON file path: \(url.path)")
+        }
+        if let historyURL = getHistoryURL() {
+                createEmptyHistoryFileIfNeeded(at: historyURL)
+                historyArray = loadHistory(from: historyURL)
+                historyTable.reloadData()
+            }
     }
     
+    @IBAction func daystillExpiration(_ sender: UIDatePicker) {
+        let calendar = Calendar.current
+        
+        let todaysDate = calendar.startOfDay(for: Date())
+        let selectedDate = sender.date
+        
+        let components = calendar.dateComponents([.day], from: todaysDate, to: selectedDate)
+        print(components)
+        
+        expirationDays = components.day
+    }
+    
+    // gets the url of the json file
     func getDocumentsURL() -> URL? {
         let fileManager = FileManager.default
         return try? fileManager.url(for: .documentDirectory,
@@ -79,47 +126,141 @@ class AddViewController: UIViewController {
             return
         }
 
-        let newGrocery = GroceryItem(name: itemName.text ?? "", daysItLasts: 3)
+        let newGrocery = GroceryItem(name: itemName.text ?? "", daysItLasts: expirationDays ?? 0)
         dashboardData.DashboardProducts.append(newGrocery)
         print(dashboardData)
 
         saveDashboardData(dashboardData, to: documentsURL)
 
-        // Continue with your existing logic
         checkForPermission(groceryName: itemName.text ?? "", expireDate: expireDate.date)
         self.tabBarController?.selectedIndex = 0
+        
+        let historyItem = HistoryItem(name: itemName.text ?? "", days: expirationDays ?? 0)
+        if !historyArray.contains(where: { $0.name == historyItem.name }) {
+            historyArray.append(historyItem)
+            historyTable.reloadData()
+            
+            if let historyURL = getHistoryURL() {
+                    saveHistory(historyArray, to: historyURL)
+                }
+        }
+    }
+    
+    // history table stuff
+    
+    //amount of rows
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return historyArray.count
+    }
+    
+    //data in each cell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath)
+            
+        cell.textLabel?.text = historyArray[indexPath.row].name + " - " + String(historyArray[indexPath.row].days) + " days"
+        
+        return cell
+    }
+    
+    //height of row
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    //cell function
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedProd = historyArray[indexPath.row].name
+        print("Selected \(selectedProd)")
+        
+        itemName.text = selectedProd
+        defaultDate = calendarDate(fromDays: historyArray[indexPath.row].days)!
+        viewDidLoad( )
+    }
+    
+    //cell swipe to delete func
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            historyArray.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            if let historyURL = getHistoryURL() {
+                saveHistory(historyArray, to: historyURL)
+            }
+        }
+    }
+    
+    func getHistoryURL() -> URL? {
+        let fileManager = FileManager.default
+        return try? fileManager
+            .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            .appendingPathComponent("History.json")
+    }
+    
+    func createEmptyHistoryFileIfNeeded(at url: URL) {
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: url.path) {
+            do {
+                let emptyData = try JSONEncoder().encode([HistoryItem]())
+                try emptyData.write(to: url)
+                print("Created empty History.json")
+            } catch {
+                print("Failed to create History file: \(error)")
+            }
+        }
+    }
+
+    func loadHistory(from url: URL) -> [HistoryItem] {
+        do {
+            let data = try Data(contentsOf: url)
+            let history = try JSONDecoder().decode([HistoryItem].self, from: data)
+            return history
+        } catch {
+            print("Failed to load history: \(error)")
+            return []
+        }
+    }
+    
+    func saveHistory(_ history: [HistoryItem], to url: URL) {
+        do {
+            let data = try JSONEncoder().encode(history)
+            try data.write(to: url)
+            print("Saved history")
+        } catch {
+            print("Failed to save history: \(error)")
+        }
     }
 
     
+    // days to calendardate conversopm
+    func calendarDate(fromDays daysFromNow: Int) -> Date? {
+        let calendar = Calendar.current
+        let today = Date()
 
-    
-    override func viewDidLoad() {
-        itemName.placeholder = "type here"
+        let futureDate = calendar.date(byAdding: .day, value: daysFromNow, to: today)
 
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        return futureDate
     }
+    
     
     func checkForPermission(groceryName : String, expireDate: Date) {
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.getNotificationSettings { settings in
-                switch settings.authorizationStatus {
-                case .authorized:
-                    self.dispatchNotification(groceryName: groceryName, expireDate: expireDate)
-                case .denied:
-                    return
-                case .notDetermined:
-                    notificationCenter.requestAuthorization(options: [.alert, .sound]) {didAllow, error in
-                        if didAllow {
-                            self.dispatchNotification(groceryName: groceryName, expireDate: expireDate)
-                        }
+            switch settings.authorizationStatus {
+            case .authorized:
+                self.dispatchNotification(groceryName: groceryName, expireDate: expireDate)
+            case .denied:
+                return
+            case .notDetermined:
+                notificationCenter.requestAuthorization(options: [.alert, .sound]) {didAllow, error in
+                    if didAllow {
+                        self.dispatchNotification(groceryName: groceryName, expireDate: expireDate)
                     }
-                default:
-                    return
-                
                 }
+            default:
+                return
+            
             }
         }
+    }
     
     func dispatchNotification(groceryName : String, expireDate: Date) {
         let identifier = groceryName
