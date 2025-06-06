@@ -13,7 +13,7 @@ struct GroceryItem: Codable {
 }
 
 struct DashboardData: Codable {
-    let DashboardProducts: [GroceryItem]
+    var DashboardProducts: [GroceryItem]
 }
 
 class tableCell: UITableViewCell {
@@ -28,23 +28,65 @@ class DashboardViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        loadGroceryData()
+        
+        // UNCOMMENT THIS WHEN GROCERY LIST GET TOO LONG
+        // COMMENT IT BACK FOR TESTING
+        // clearDashboardData()
+
     }
     
-    func loadGroceryData() {
-        guard let fileURL = Bundle.main.url(forResource: "LocalStorage", withExtension: "json") else {
-            print("File not found in bundle.")
+    // THIS FUNCTION PURELY FOR TESTING
+    // IT RESETS THE JSON EVERYTIME THE APP IS LOADED
+    func clearDashboardData() {
+        guard let fileURL = documentsFileURL() else {
+            print("Could not find Documents directory")
             return
         }
 
+        let emptyData = DashboardData(DashboardProducts: [])
+        do {
+            let encoded = try JSONEncoder().encode(emptyData)
+            try encoded.write(to: fileURL)
+            print("Cleared dashboard data file")
+        } catch {
+            print("Failed to clear dashboard data: \(error)")
+        }
+    }
+    
+    func documentsFileURL() -> URL? {
+        let fileManager = FileManager.default
+        return try? fileManager.url(for: .documentDirectory,
+                                    in: .userDomainMask,
+                                    appropriateFor: nil,
+                                    create: true)
+            .appendingPathComponent("LocalStorage.json")
+    }
+    
+    func loadGroceryData() {
+        guard let fileURL = documentsFileURL() else {
+            print("Could not find Documents directory")
+            return
+        }
+        
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: fileURL.path) {
+            if let bundleURL = Bundle.main.url(forResource: "LocalStorage", withExtension: "json") {
+                do {
+                    try fileManager.copyItem(at: bundleURL, to: fileURL)
+                    print("Copied JSON file to Documents")
+                } catch {
+                    print("Failed to copy JSON to Documents: \(error)")
+                }
+            }
+        }
+        
         do {
             let data = try Data(contentsOf: fileURL)
-            let decoder = JSONDecoder()
-            let dashboardData = try decoder.decode(DashboardData.self, from: data)
+            let dashboardData = try JSONDecoder().decode(DashboardData.self, from: data)
             self.groceryArray = dashboardData.DashboardProducts
             tableView.reloadData()
         } catch {
-            print("Failed to decode JSON: \(error)")
+            print("Failed to load or decode JSON: \(error)")
         }
     }
     
@@ -54,8 +96,8 @@ class DashboardViewController: UITableViewController {
         if (groceryArray.count > 0) {
             print("Number of items: \(groceryArray.count)")
         }
-        tableView.reloadData() // this is needed to update data from upload page
-        // TODO: load in cloud data
+        loadGroceryData()
+        tableView.reloadData()
 
     }
     

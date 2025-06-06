@@ -18,6 +18,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         return true
     }
+    
+    func copyJSONToDocumentsIfNeeded() {
+        let fileManager = FileManager.default
+        guard let bundleURL = Bundle.main.url(forResource: "LocalStorage", withExtension: "json"),
+              let documentsURL = try? fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("LocalStorage.json") else {
+            print("Could not locate source or destination path")
+            return
+        }
+
+        if !fileManager.fileExists(atPath: documentsURL.path) {
+            do {
+                try fileManager.copyItem(at: bundleURL, to: documentsURL)
+                print("Copied LocalStorage.json to Documents directory")
+            } catch {
+                print("Failed to copy file: \(error)")
+            }
+        }
+    }
+
 
     // MARK: UISceneSession Lifecycle
 
