@@ -72,18 +72,18 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="*date is here*" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTV-Ms-bwr">
-                                            <rect key="frame" x="189" y="20.666666666666668" width="104" height="21.000000000000004"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="*date is here*" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTV-Ms-bwr">
+                                            <rect key="frame" x="269" y="20.666666666666668" width="104" height="21.000000000000004"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" systemColor="opaqueSeparatorColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="CTV-Ms-bwr" secondAttribute="trailing" constant="100" id="Ati-xL-FuE"/>
                                         <constraint firstItem="jdw-ID-SBZ" firstAttribute="leading" secondItem="yBY-23-hzx" secondAttribute="leadingMargin" constant="20" id="Csk-UW-vkc"/>
                                         <constraint firstItem="jdw-ID-SBZ" firstAttribute="top" secondItem="yBY-23-hzx" secondAttribute="topMargin" constant="10" id="MBk-Xw-pnr"/>
                                         <constraint firstAttribute="bottom" secondItem="CTV-Ms-bwr" secondAttribute="bottom" constant="2" id="UcV-mY-v8c"/>
+                                        <constraint firstAttribute="trailing" secondItem="CTV-Ms-bwr" secondAttribute="trailing" constant="20" id="pXB-oQ-gX2"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -113,10 +113,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iDc-R2-eJA">
-                                <rect key="frame" x="159" y="700" width="75" height="35"/>
+                                <rect key="frame" x="149" y="700" width="95" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Generate"/>
                                 <connections>
                                     <action selector="generateRecipes" destination="cAs-u7-BUV" eventType="touchUpInside" id="IzE-cj-rqZ"/>
                                 </connections>

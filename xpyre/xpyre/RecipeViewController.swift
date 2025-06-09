@@ -38,6 +38,7 @@ class RecipeViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view
         loadGroceryData()
+        print(groceryArray)
         prompt = "Here is a list of ingredients I have: \(groceryArray). If data is empty, respond only with 'There is no grocery data for me to create recipes with!.' If there is data, create a list of three recipes, prioritizing the ingredients with the least amount of time before expirations. No need to explain rationale or give an introduction, just give the name of the recipe, the ingredients needed, and the instructions."
         recipeScroll.contentSize = CGSize(width: recipeScroll.frame.size.width, height: 2000)
     }
