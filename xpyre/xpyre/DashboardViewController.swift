@@ -111,6 +111,9 @@ class DashboardViewController: UITableViewController {
         if (groceryArray.count > 0) {
             print("Number of items: \(groceryArray.count)")
         }
+        
+//        groceryArray.sort{ $0.name < $1.name } // does not work and just increases runtime
+
         loadGroceryData()
         tableView.reloadData()
     }
