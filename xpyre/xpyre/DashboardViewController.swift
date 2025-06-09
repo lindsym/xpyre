@@ -7,9 +7,9 @@
 
 import UIKit
 
-struct GroceryItem: Codable {
+public struct GroceryItem: Codable {
     let name: String
-    let daysItLasts: Int
+    let expirationDate: Date
 }
 
 struct DashboardData: Codable {
@@ -125,7 +125,6 @@ class DashboardViewController: UITableViewController {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "filter", for: indexPath) as? filterCell else {
                 fatalError("Could not dequeue cell with identifier 'filter'")
             }
-            // TODO: delete print statements
 
             cell.applySort = { [weak self] selectedIndex in
                  self?.sort(selectedIndex)
@@ -138,7 +137,15 @@ class DashboardViewController: UITableViewController {
             }
             let item = groceryArray[indexPath.row - 1]
             cell.cellName.text = item.name
-            cell.cellDate.text = "Expires in " + String(item.daysItLasts) + " days"
+
+            let date: Date = item.expirationDate as Date
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM-dd-yyyy"
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+
+            let formattedDate = formatter.string(from: date)
+            cell.cellDate.text = "Expires on \(formattedDate)"
+            print(type(of: item.expirationDate))
             return cell
         }
     }
@@ -152,7 +159,7 @@ class DashboardViewController: UITableViewController {
 
         // date sort
         } else {
-            filteredArray.sort { $0.daysItLasts < $1.daysItLasts }
+            filteredArray.sort { $0.expirationDate < $1.expirationDate }
         }
         groceryArray = filteredArray
         tableView.reloadData()

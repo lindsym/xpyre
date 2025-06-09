@@ -140,7 +140,7 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
             return
         }
 
-        let newGrocery = GroceryItem(name: itemName.text ?? "", daysItLasts: expirationDays ?? 0)
+        let newGrocery = GroceryItem(name: itemName.text ?? "", expirationDate: expireDate.date)
         dashboardData.DashboardProducts.append(newGrocery)
         print(dashboardData)
 
@@ -158,6 +158,9 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
                     saveHistory(historyArray, to: historyURL)
                 }
         }
+        itemName.text = ""
+        expireDate.date = Date()
+        expirationDays = nil
     }
     
     // history table stuff
