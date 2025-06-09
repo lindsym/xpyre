@@ -177,30 +177,46 @@ class DashboardViewController: UITableViewController {
         if indexPath.row > 0 {
             let selectedProd = groceryArray[indexPath.row - 1].name
             print("Selected: \(selectedProd)")
-
-            let alert = UIAlertController(title: "Delete this item?", message: "\(selectedProd)", preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { _ in
-                // delete from local store
-                self.groceryArray.remove(at: indexPath.row - 1)
-                
-                // delete from JSON
-                self.deleteFromJSON(selectedProd)
-                
-                // delete from table view
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-                
-                print(self.groceryArray)
-
-            } )
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
             
-            print(groceryArray)
+            performSegue(withIdentifier: "seg1", sender:self)
+
+//            let alert = UIAlertController(title: "Delete this item?", message: "\(selectedProd)", preferredStyle: UIAlertController.Style.alert)
+//            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default) { _ in
+//                // delete from local store
+//                self.groceryArray.remove(at: indexPath.row - 1)
+//                
+//                // delete from JSON
+//                self.deleteFromJSON(selectedProd)
+//                
+//                // delete from table view
+//                tableView.deleteRows(at: [indexPath], with: .automatic)
+//                
+//                print(self.groceryArray)
+//
+//            } )
+//            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
+//            self.present(alert, animated: true, completion: nil)
+//            
+//            print(groceryArray)
         } else {
             return
         }
 
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let index = tableView.indexPathForSelectedRow?.row {
+            let grocery = groceryArray[index - 1].name
+            let destinationVC = segue.destination as? EditViewController
+            
+            destinationVC?.groceryItemName = grocery
+            destinationVC?.groceryArray = groceryArray
+            destinationVC?.groceryIndex = index - 1
+            destinationVC?.originalDate = groceryArray[index - 1].expirationDate
+            
+        }
+    }
+    
     
     // does as the title states
     func deleteFromJSON(_ name: String) {
