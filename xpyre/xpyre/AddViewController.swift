@@ -39,12 +39,13 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
     @IBOutlet weak var historyTable: UITableView!
     
     override func viewDidLoad() {
-        itemName.placeholder = "type here"
 
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        itemName.placeholder = "type here"
         historyTable.delegate = self
         historyTable.dataSource = self
+        self.hideKeyboardWhenTappedAround()
         
         // datepicker testing
 //        let calendar = Calendar.current

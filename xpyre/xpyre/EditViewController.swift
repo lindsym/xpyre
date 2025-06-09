@@ -81,6 +81,8 @@ class EditViewController: UIViewController {
         groceryNameUpdateField.placeholder = "update here"
         groceryNameUpdateField.text = groceryItemName
         dateInput.date = originalDate
+        
+        self.hideKeyboardWhenTappedAround() 
     }
     
     func deleteFromJSON(_ name: String) {

@@ -44,6 +44,8 @@ class DashboardViewController: UITableViewController {
         // UNCOMMENT THIS WHEN GROCERY LIST GET TOO LONG
         // COMMENT IT BACK FOR TESTING
         // clearDashboardData()
+        
+        self.hideKeyboardWhenTappedAround() 
     }
     
     
@@ -234,5 +236,17 @@ class DashboardViewController: UITableViewController {
         } catch {
             print("Error deleting from JSON: \(error)")
         }
+    }
+}
+
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
