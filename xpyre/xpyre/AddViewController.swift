@@ -292,6 +292,14 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
         content.body = body
         content.sound = .default
         
+        // from settings
+        let daysBefore = NotifSettings.daysBeforeNotif
+        let time = NotifSettings.notificationTime
+        
+        guard let notifyDate = Calendar.current.date(byAdding: .day, value: -daysBefore, to: expireDate) else { return }
+        let timeComponents = Calendar.current.dateComponents([.hour, .minute], from: time)
+        guard let finalNotifyDate = Calendar.current.date(bySettingHour: timeComponents.hour!, minute: timeComponents.minute!, second: 0, of: notifyDate) else { return }
+        
         let calendar = Calendar.current
         var dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: expireDate)
         
@@ -312,9 +320,11 @@ class AddViewController: UIViewController, UITableViewDataSource, UITableViewDel
             dateComponents.second = 0
         }
         
+        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: finalNotifyDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
         
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
         
         notificationCenter.removeDeliveredNotifications(withIdentifiers: [identifier])
         notificationCenter.add(request)

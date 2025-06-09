@@ -145,7 +145,6 @@ class DashboardViewController: UITableViewController {
 
             let formattedDate = formatter.string(from: date)
             cell.cellDate.text = "Expires on \(formattedDate)"
-            print(type(of: item.expirationDate))
             return cell
         }
     }
