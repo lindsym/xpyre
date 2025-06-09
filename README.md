@@ -13,9 +13,7 @@ How might broke college students make the most out of their groceries so that th
 5. As a user, I want to be able to store every type of product I’ve bought, so if I buy them on a separate occasion, I don’t have to enter in all the details again
 
 ## Optional User Stories
-1. As a user, I want to be able to store every type of product I’ve bought, so if I buy them on a separate occasion, I don’t have to enter in all the details again
+1. As a user, I want to be able to change my notification settings so I receive them when it’s most convenient for me
 
-2. As a user, I want to be able to change my notification settings so I receive them when it’s most convenient for me
-
-3. As a user, I want to know how much food waste I’ve saved by seeing a visual of what food I didn’t throw out
+2. As a user, I want to know how much food waste I’ve saved by seeing a visual of what food I didn’t throw out
 
