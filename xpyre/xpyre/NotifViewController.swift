@@ -91,7 +91,7 @@ class NotifViewController: UITableViewController {
         do {
             let data = try encoder.encode(items)
             try data.write(to: url)
-            print("saved notif from all notif controller")
+//            print("saved notif from all notif controller")
         } catch {
             print("could not save \(error)")
         }
