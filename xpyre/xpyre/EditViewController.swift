@@ -59,7 +59,7 @@ class EditViewController: UIViewController {
             return
         }
 
-        let newGrocery = GroceryItem(name: groceryNameUpdateField.text ?? "", expirationDate: Date())
+        let newGrocery = GroceryItem(name: groceryNameUpdateField.text ?? "", expirationDate: dateInput.date)
         dashboardData.DashboardProducts.append(newGrocery)
         print(dashboardData)
         
